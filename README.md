@@ -1,2 +1,1 @@
-# MotoGP
-Analysis of MotoGP data from 1949 to the present, developed as part of my final project for a Master of Business Intelligence &amp; Advanced Analytics.
+![motogp9058-removebg-preview](https://github.com/user-attachments/assets/7d1aae2c-053c-448c-b45f-9618c4ee14d7)
