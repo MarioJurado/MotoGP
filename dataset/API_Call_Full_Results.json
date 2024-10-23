@@ -1,0 +1,40 @@
+{
+	"name": "API_Call_Full_Results",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "API_REST_RacingMike_MotoGP",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"version": "v1.0"
+			}
+		},
+		"parameters": {
+			"token": {
+				"type": "String"
+			},
+			"call_type": {
+				"type": "string",
+				"defaultValue": "motogp-full-results"
+			},
+			"eventid": {
+				"type": "string"
+			},
+			"year": {
+				"type": "int"
+			},
+			"session": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@{dataset().call_type}?token=@{dataset().token}&eventid=@{dataset().eventid}&year=@{dataset().year}&session=@{dataset().session}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

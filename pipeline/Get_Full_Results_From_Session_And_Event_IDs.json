@@ -1,0 +1,109 @@
+{
+	"name": "Get_Full_Results_From_Session_And_Event_IDs",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data Full results",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"dataIntegrationUnits": 4
+				},
+				"inputs": [
+					{
+						"referenceName": "API_Call_Full_Results",
+						"type": "DatasetReference",
+						"parameters": {
+							"token": {
+								"value": "@pipeline().parameters.token",
+								"type": "Expression"
+							},
+							"call_type": "motogp-full-results",
+							"eventid": {
+								"value": "@pipeline().parameters.eventid",
+								"type": "Expression"
+							},
+							"year": {
+								"value": "@pipeline().parameters.year",
+								"type": "Expression"
+							},
+							"session": {
+								"value": "@pipeline().parameters.sessionid",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FullResultsJson",
+						"type": "DatasetReference",
+						"parameters": {
+							"year": {
+								"value": "@pipeline().parameters.year",
+								"type": "Expression"
+							},
+							"eventid": {
+								"value": "@pipeline().parameters.eventid",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"eventid": {
+				"type": "string"
+			},
+			"sessionid": {
+				"type": "string"
+			},
+			"token": {
+				"type": "string"
+			},
+			"year": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"countNORACE": {
+				"type": "Boolean",
+				"defaultValue": false
+			}
+		},
+		"folder": {
+			"name": "Ingest_Entities_Data/Getting_Full_Results"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-23T16:16:19Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

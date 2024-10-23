@@ -1,0 +1,307 @@
+{
+	"name": "Master_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Loop Launcher Ingesta Except",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Assign From value to Year",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(variables('year'),pipeline().parameters.until)",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Execute Pipeline Master",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Entities_Loop",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"year": {
+										"value": "@variables('year')",
+										"type": "Expression"
+									},
+									"token": {
+										"value": "@pipeline().parameters.token",
+										"type": "Expression"
+									},
+									"categoryid": {
+										"value": "@pipeline().parameters.categoryid",
+										"type": "Expression"
+									},
+									"entities": {
+										"value": "@pipeline().parameters.entities",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Set variable nextYear",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Pipeline Master",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "nextYear",
+								"value": {
+									"value": "@add(variables('year'),1)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Update year",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable nextYear",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "year",
+								"value": {
+									"value": "@variables('nextYear')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Add Year to Temp List",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Execute Pipeline Master",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "tempYearList",
+								"value": {
+									"value": "@union(variables('yearList'),array(variables('year')))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Update Year List",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Add Year to Temp List",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "yearList",
+								"value": {
+									"value": "@variables('tempYearList')",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Bronze_to_Silver",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Loop Launcher Ingesta Except",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Silver_Orchestrator",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"years": {
+							"value": {
+								"value": "@string(variables('yearList'))",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "SmallSparkPool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
+				}
+			},
+			{
+				"name": "Silver_to_Gold",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Bronze_to_Silver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Gold_Orchestrator",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"years": {
+							"value": {
+								"value": "@string(variables('yearList'))",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "SmallSparkPool",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": "Small",
+					"conf": {
+						"spark.dynamicAllocation.enabled": false
+					},
+					"driverSize": "Small"
+				}
+			},
+			{
+				"name": "Assign From value to Year",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "year",
+					"value": {
+						"value": "@pipeline().parameters.from",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"from": {
+				"type": "int"
+			},
+			"until": {
+				"type": "int"
+			},
+			"entities": {
+				"type": "array",
+				"defaultValue": [
+					"full-results",
+					"world-standing-riders",
+					"events"
+				]
+			},
+			"token": {
+				"type": "string",
+				"defaultValue": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+			},
+			"categoryid": {
+				"type": "string",
+				"defaultValue": "e8c110ad-64aa-4e8e-8a86-f2f152f6a942"
+			}
+		},
+		"variables": {
+			"nextYear": {
+				"type": "Integer"
+			},
+			"year": {
+				"type": "Integer"
+			},
+			"yearList": {
+				"type": "Array"
+			},
+			"tempYearList": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-23T16:19:03Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
