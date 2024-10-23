@@ -1,0 +1,37 @@
+{
+	"name": "API_Call_World_Standing_Riders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "API_REST_RacingMike_MotoGP",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"version": "v1.0"
+			}
+		},
+		"parameters": {
+			"call_type": {
+				"type": "string",
+				"defaultValue": "motogp-world-standing-riders"
+			},
+			"token": {
+				"type": "string"
+			},
+			"categoryid": {
+				"type": "string"
+			},
+			"year": {
+				"type": "int"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@{dataset().call_type}?token=@{dataset().token}&year=@{dataset().year}&categoryid=@{dataset().categoryid}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

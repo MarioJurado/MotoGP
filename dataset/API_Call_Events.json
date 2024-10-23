@@ -1,0 +1,34 @@
+{
+	"name": "API_Call_Events",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "API_REST_RacingMike_MotoGP",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"version": "v1.0"
+			}
+		},
+		"parameters": {
+			"token": {
+				"type": "String"
+			},
+			"call_type": {
+				"type": "String",
+				"defaultValue": "motogp-events"
+			},
+			"year": {
+				"type": "int"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@{dataset().call_type}?token=@{dataset().token}&year=@{dataset().year}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

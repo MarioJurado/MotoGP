@@ -1,0 +1,32 @@
+{
+	"name": "WorldStandingRidersJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synapse-studio-tfm-motogp-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"year": {
+				"type": "int"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "world-standing-riders-@{dataset().year}.json",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "world-standing-riders/@{dataset().year}",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

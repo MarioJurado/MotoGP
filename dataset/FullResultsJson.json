@@ -1,0 +1,35 @@
+{
+	"name": "FullResultsJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "synapse-studio-tfm-motogp-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"year": {
+				"type": "int"
+			},
+			"eventid": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "full-results-event-@{dataset().eventid}.json",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "full-results/@{dataset().year}",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

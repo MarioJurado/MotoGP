@@ -1,0 +1,17 @@
+{
+	"name": "Views_Delta_Tables",
+	"properties": {
+		"content": {
+			"query": "create or alter view [dbo].[Races] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/races/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\ncreate or alter view [dbo].[Circuits] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/circuits/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\ncreate or alter view [dbo].[Events] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/events/',\n        FORMAT = 'DELTA'\n    ) AS [result]  \n\ncreate or alter view [dbo].[Riders] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/riders/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\ncreate or alter view [dbo].[Teams] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/teams/',\n        FORMAT = 'DELTA'\n    ) AS [result] \n\ncreate or alter view [dbo].[Standings] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/standings/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\ncreate or alter view [dbo].[Date] as\nSELECT\n    *\nFROM\n    OPENROWSET(\n        BULK 'https://datalakemotogp.dfs.core.windows.net/gold/api-racing-mike/motogp/date/',\n        FORMAT = 'DELTA'\n    ) AS [result]\n\n-- Drop Views\n\ndrop view dbo.Circuits\ndrop view dbo.Date\ndrop view dbo.Events\ndrop view dbo.Races\ndrop view dbo.Riders\ndrop view dbo.Standings\ndrop view dbo.Teams",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "MotoGPServerlessDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

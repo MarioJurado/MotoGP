@@ -1,0 +1,257 @@
+{
+	"name": "Entities_Loop",
+	"properties": {
+		"description": "ForEach Entities",
+		"activities": [
+			{
+				"name": "ForEachEntitie",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.entities",
+						"type": "Expression"
+					},
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "Switch",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item()",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "full-results",
+										"activities": [
+											{
+												"name": "Execute Pipe Folder GettinFullResults",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "Get_Event_IDs",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"token": {
+															"value": "@pipeline().parameters.token",
+															"type": "Expression"
+														},
+														"year": {
+															"value": "@pipeline().parameters.year",
+															"type": "Expression"
+														},
+														"categoryid": {
+															"value": "@pipeline().parameters.categoryid",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "world-standing-riders",
+										"activities": [
+											{
+												"name": "Copy data world-standing-riders",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.00:10:00",
+													"retry": 3,
+													"retryIntervalInSeconds": 60,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "RestSource",
+														"httpRequestTimeout": "00:10:00",
+														"requestInterval": "00.00:00:00.010",
+														"requestMethod": "POST",
+														"paginationRules": {
+															"supportRFC5988": "true"
+														}
+													},
+													"sink": {
+														"type": "JsonSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "JsonWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"dataIntegrationUnits": 4
+												},
+												"inputs": [
+													{
+														"referenceName": "API_Call_World_Standing_Riders",
+														"type": "DatasetReference",
+														"parameters": {
+															"call_type": "motogp-world-standing-riders",
+															"token": {
+																"value": "@pipeline().parameters.token",
+																"type": "Expression"
+															},
+															"categoryid": {
+																"value": "@pipeline().parameters.categoryid",
+																"type": "Expression"
+															},
+															"year": {
+																"value": "@pipeline().parameters.year",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "WorldStandingRidersJson",
+														"type": "DatasetReference",
+														"parameters": {
+															"year": {
+																"value": "@pipeline().parameters.year",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "events",
+										"activities": [
+											{
+												"name": "Copy data Events",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.00:10:00",
+													"retry": 3,
+													"retryIntervalInSeconds": 60,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "RestSource",
+														"httpRequestTimeout": "00:10:00",
+														"requestInterval": "00.00:00:00.010",
+														"requestMethod": "POST",
+														"paginationRules": {
+															"supportRFC5988": "true"
+														}
+													},
+													"sink": {
+														"type": "JsonSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "JsonWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"dataIntegrationUnits": 4
+												},
+												"inputs": [
+													{
+														"referenceName": "API_Call_Events",
+														"type": "DatasetReference",
+														"parameters": {
+															"token": {
+																"value": "@pipeline().parameters.token",
+																"type": "Expression"
+															},
+															"call_type": "motogp-events",
+															"year": {
+																"value": "@pipeline().parameters.year",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "EventsJson",
+														"type": "DatasetReference",
+														"parameters": {
+															"year": {
+																"value": "@pipeline().parameters.year",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "Default case",
+										"type": "Fail",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"message": "Default case reached",
+											"errorCode": "0001"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"year": {
+				"type": "int"
+			},
+			"token": {
+				"type": "string"
+			},
+			"categoryid": {
+				"type": "string"
+			},
+			"entities": {
+				"type": "array"
+			}
+		},
+		"variables": {
+			"eventid": {
+				"type": "String"
+			},
+			"sessionid": {
+				"type": "String"
+			},
+			"nextYear": {
+				"type": "Integer"
+			}
+		},
+		"folder": {
+			"name": "Ingest_Entities_Data"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-23T16:18:32Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

@@ -1,0 +1,106 @@
+{
+	"name": "Validate_Session",
+	"properties": {
+		"activities": [
+			{
+				"name": "API_Call",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "https://api.micheleberardi.com/racing/v1.0/motogp-sessions?token=@{pipeline().parameters.token}&year=@{pipeline().parameters.year}&categoryid=@{pipeline().parameters.categoryid}&eventid=@{pipeline().parameters.eventid}",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					}
+				}
+			},
+			{
+				"name": "If Id or Result",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "API_Call",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@contains(string(activity('API_Call').output.Response),'id')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Execute GetSessions",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Get_Session_IDs_From_Event_ID",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"eventid": {
+										"value": "@pipeline().parameters.eventid",
+										"type": "Expression"
+									},
+									"token": {
+										"value": "@pipeline().parameters.token",
+										"type": "Expression"
+									},
+									"year": {
+										"value": "@pipeline().parameters.year",
+										"type": "Expression"
+									},
+									"categoryid": {
+										"value": "@pipeline().parameters.categoryid",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"token": {
+				"type": "string"
+			},
+			"year": {
+				"type": "int"
+			},
+			"categoryid": {
+				"type": "string"
+			},
+			"eventid": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Ingest_Entities_Data/Getting_Full_Results"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-10-23T16:17:25Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}
