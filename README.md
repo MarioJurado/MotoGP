@@ -35,8 +35,10 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
     1. **Year**: First, we choose the year for which we want to get the data.
     2. **Event ID**: We use the obtained year to make the next call and get the ID of the Events for that year.
     3. **Session ID**: With the Event ID and the year, we make a call to get the Session ID of the race of this event.
-    4. **Full Results**: With the Session ID, the Event ID and the year, we make the final call to the Full Results endpoint to get the full data.  
- ** Captura pipelines
+    4. **Full Results**: With the Session ID, the Event ID and the year, we make the final call to the Full Results endpoint to get the full data.
+       
+    ![Pipelines](https://github.com/user-attachments/assets/40fbb437-ee59-4e9a-8eb6-1e3e18695591)
+
     + Just the entities **Events**, **World Standing Riders** and **Full Results** have the relevant data to analyze. The data from the first two entities is ingested in the Entities Loop pipeline, using a Copy Data activity, those two entities dont need any key parameters so it's not needed to nest any more pipeline.
     + However, the other entity does need it so there is four nested pipelines inside the folder Getting_Full_Results with the sole task of retrieve the correct ID's to form the final call to Full Results endpoint. 
     + The calls runs in parallel using the Batch Count option at 10, extracting 5 years of data in less than 30 minutes.
@@ -48,8 +50,6 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 
 3. **Data load** for analysis:
     + Data loading is done through **SQL views**, which expose the data from the Gold layer in a **Synapse Serverless SQL database**. This database and these views provide Power BI with a direct connection point to the stored data using the Serverles SQL endpoint, simplifying its querying and analysis.
-4. **Semantic Model**:
-**modelo
 
 # Power BI Report
 
@@ -69,6 +69,11 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 
 ![PBIStandings](https://github.com/user-attachments/assets/42ee19d3-1e69-4022-ac8f-8906f4f868cf)
 
+> ###Semantic Model
+> 
+![Semantic Model](https://github.com/user-attachments/assets/6ecea468-9cbc-48f8-83db-e83997aa4fc7)
+
+# END
 > If you are interested in my work, or want to contact me for anything else, feel free to write me at:  
 ***mariojuradogalan@gmail.com***
 
