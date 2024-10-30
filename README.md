@@ -73,7 +73,8 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 > 
 ![Semantic Model](https://github.com/user-attachments/assets/6ecea468-9cbc-48f8-83db-e83997aa4fc7)
 
-# END
+# CONTACT
+
 > If you are interested in my work, or want to contact me for anything else, feel free to write me at:  
 ***mariojuradogalan@gmail.com***
 
