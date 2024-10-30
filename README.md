@@ -1,8 +1,8 @@
 ![motogp9058-removebg-preview](https://github.com/user-attachments/assets/7d1aae2c-053c-448c-b45f-9618c4ee14d7)
 
 # ETL
-![MotoGP TFM Architecture](https://github.com/user-attachments/assets/f986f1a0-c93d-4683-a16d-8ca455f4d14d)
 
+![MotoGP TFM Architecture](https://github.com/user-attachments/assets/7110c9e2-b0e2-41dc-8d7c-7ac2ae503c87)
 
 ![PBIStatics](https://github.com/user-attachments/assets/1537f4ea-3790-4eab-bbf5-9ad3823c2916)
 ![PBIStandings](https://github.com/user-attachments/assets/42ee19d3-1e69-4022-ac8f-8906f4f868cf)
