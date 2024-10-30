@@ -49,7 +49,7 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
     + **Gold_Orchestrator**: Notebook is responsible of creating all the **fact and dimension tables** by **joining the curated tables** in the Silver layer. Additionally, some columns are renamed to easily identify them during the analysis. The data is saved in **Delta** format, executing a merge with the existing data or creating a new table, and is stored in an ADLS container dedicated to the **Gold** layer.
 
 3. **Data load** for analysis:
-    + Data loading is done through **SQL views**, which expose the data from the Gold layer in a **Synapse Serverless SQL database**. This database and these views provide Power BI with a direct connection point to the stored data using the Serverles SQL endpoint, simplifying its querying and analysis.
+    + Data loading is done through **SQL views**, which expose the data from the Gold layer in a **Synapse Serverless SQL database**. This database and these views provide Power BI with a connection point to import the stored data using the Serverles SQL endpoint, simplifying its querying and analysis.
 
 # Power BI Report
 
@@ -69,8 +69,8 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 
 ![PBIStandings](https://github.com/user-attachments/assets/42ee19d3-1e69-4022-ac8f-8906f4f868cf)
 
-> ###Semantic Model
-> 
+> ### Semantic Model
+ 
 ![Semantic Model](https://github.com/user-attachments/assets/6ecea468-9cbc-48f8-83db-e83997aa4fc7)
 
 # CONTACT
