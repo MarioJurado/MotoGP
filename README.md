@@ -20,21 +20,36 @@ Endpoints overview:
 
 Most of the services used are from Azure Synapse Analytics environment, you can see the full architecture below.
 
-I build a Medallion architecture in order to divide and organize the data processing tasks, using Azure Data Lake Storage Gen 2 to store the data 
-and Spark notebooks to process it between layers.  
-This layers are Bronze to store raw data, Silver for cleaned and deduplicated data and Gold for dimensional tables built from Silver outcome.
+The ETL(Extract, Transform, Load) follows a **Medallion Architecture**, designed to divide, organize and manage the data processing tasks. Data is ingested and stored in  Azure Data Lake Storage Gen 2 while Spark notebooks are used to transform it between layers.  
+The architecture consists of three layers:
++ Bronze Layer: Stores raw and unprocessed data from the API, in JSON format.  
++ Silver Layer: Contains cleaned, validated, and deduplicated data.  
++ Gold Layer: Holds dimensional tables based on the clean data from the Silver layer, optimized for analytics and reporting.
 
 ![MotoGP TFM Architecture](https://github.com/user-attachments/assets/25a6319e-80bb-4fd8-9b72-60535d9dca99)
 
-1. Following the architecture above, the data is ingested using **Synapse Pipelines**, with a bunch of **nested pipelines** that orchestrate calls to the API.
+1. Following the architecture above, the data is **extracted** using **Synapse Pipelines**, with a bunch of **nested pipelines** that orchestrate calls to the API.
 To understand the logic of this calls, the bulk of the relevant data is located in the Full Results endpoint, but it need some key parameters
 to get the correct data. These parameters are obtained through a sequence of calls to an specific API endpoint, which provides the ID's 
 needed to form the final call to Full Results endpoint. This is the sequence to follow:
     1. **Year**: First, we choose the year for which we want to get the data.
     2. **Event ID**: We use the obtained year to make the next call and get the ID of the Events for that year.
     3. **Session ID**: With the Event ID and the year, we make a call to get the Session ID of the race of this event.
-    4. **Full Results**: With the Session ID, the Event ID and the year, we make the final call to the Full Results endpoint to get the full data.
-2. This extracted data is deposited in a Azure Data Lake Storage Gen 2 
+    4. **Full Results**: With the Session ID, the Event ID and the year, we make the final call to the Full Results endpoint to get the full data.  
+ ** Captura pipelines
+    + Just the entities **Events**, **World Standing Riders** and **Full Results** have the relevant data to analyze. The data from the first two entities is ingested in the Entities Loop pipeline, using a Copy Data activity, those two entities dont need any key parameters so it's not needed to nest any more pipeline.
+    + However, the other entity does need it so there is four nested pipelines inside the folder Getting_Full_Results with the sole task of retrieve the correct ID's to form the final call to Full Results endpoint. 
+    + The calls runs in parallel using the Batch Count option at 10, extracting 5 years of data in less than 30 minutes.
+    + After ingest all the data with the pipelines, we have it ready in the Bronze layer, stored in a Azure Data Lake Storage Gen 2.
+
+2. **Data transformation** is performed using two Spark notebooks: 
+    + **Silver_Orchestrator**: Notebook that orchestrates the loading of data from the Bronze layer, removing **unwanted values** ​​and **deduplicating records**. It keeps the relevant columns and adds some necessary **metadata**, such as the loading date. Finally, the data is stored in **Delta** format, merging with the existing data or creating the tables if they do not exist. This data is partitioned by year and month and stored in an ADLS container exclusive to the **Silver** layer.
+    + **Gold_Orchestrator**: Notebook is responsible of creating all the **fact and dimension tables** by **joining the curated tables** in the Silver layer. Additionally, some columns are renamed to easily identify them during the analysis. The data is saved in **Delta** format, executing a merge with the existing data or creating a new table, and is stored in an ADLS container dedicated to the **Gold** layer.
+
+3. **Data load** for analysis:
+    + Data loading is done through **SQL views**, which expose the data from the Gold layer in a **Synapse Serverless SQL database**. This database and these views provide Power BI with a direct connection point to the stored data using the Serverles SQL endpoint, simplifying its querying and analysis.
+4. **Semantic Model**:
+**modelo
 
 # Power BI Report
 
