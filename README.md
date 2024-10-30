@@ -75,7 +75,9 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 
 # CONTACT
 
-> If you are interested in my work, or want to contact me for anything else, feel free to write me at:  
-***mariojuradogalan@gmail.com***
+> If you are interested in my work, or want to contact me for anything else, feel free to write me by email at:  
+***mariojuradogalan@gmail.com***  
+or via LinkedIn  
+***www.linkedin.com/in/mariojuradogalan***
 
 ![marc-marquez-gresini-racing-removebg-preview](https://github.com/user-attachments/assets/c0f9fb70-dc36-4a85-9f83-86c779ef21f7)
