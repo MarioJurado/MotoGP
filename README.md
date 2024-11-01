@@ -26,7 +26,8 @@ The architecture consists of three layers:
 + Silver Layer: Contains cleaned, validated, and deduplicated data.  
 + Gold Layer: Holds dimensional tables based on the clean data from the Silver layer, optimized for analytics and reporting.
 
-![MotoGP TFM Architecture](https://github.com/user-attachments/assets/c7914bdc-c7ec-4476-9488-d44a437c3528)
+![MotoGP TFM Architecture](https://github.com/user-attachments/assets/da50adc1-efb9-4c77-aa32-afc6d8d8b8a5)
+
 
 1. Following the architecture above, the data is **extracted** using **Synapse Pipelines**, with a bunch of **nested pipelines** that orchestrate calls to the API.
 To understand the logic of this calls, the bulk of the relevant data is located in the Full Results endpoint, but it need some key parameters
