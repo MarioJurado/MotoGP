@@ -6,7 +6,7 @@
 + Also, I would like this to be **my presentation as Data Engineer**, showing my skills and having it in a Git repo, available to anyone interested.
 + And last but not least, **my father is a big fan of this sport**, and I'm motivated to give him a tool that he can dive in, and use to extract information that may be relevant for him.
 # Data Source
-I extract all the data from the Racing Mike's API as single data source, which ingest data from the official MotoGP's API.
+I extracted all the data from the Racing Mike's API as single data source, which ingest data from the official MotoGP's API.
 Endpoints overview:
 + **Seasons**: seasons of a given year.
 + **Events**: information about all events in a year, each event contains a series of sessions.
