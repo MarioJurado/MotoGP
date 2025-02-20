@@ -76,7 +76,7 @@ needed to form the final call to Full Results endpoint. This is the sequence to 
 # CONTACT
 
 > If you are interested in my work, or want to contact me for anything else, feel free to write me by email at:  
-***mariojuradogalan@gmail.com***  
+***mariojuradogalan@outlook.com***  
 or via LinkedIn  
 ***www.linkedin.com/in/mariojuradogalan***
 
